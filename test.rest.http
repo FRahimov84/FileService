@@ -1,15 +1,15 @@
-POST http://localhost:9988/save
+POST http://localhost:9888/save
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; name="file"; filename="img.jpg"
-Content-Type: image/jpeg
+Content-Disposition: form-data; name="file"; filename="par.txt"
+Content-Type: text/plain
 
-< ./down.jpg
+l;ksdk;sdkf;s
 --WebAppBoundary--
 
 ###
 
-GET http://localhost:9988/file/d445403b-1582-476f-bc69-e1e89d42a2dd
+GET http://localhost:9988/file/c7a8e188-e5a4-4e4d-a8ab-14f7a9e90702
 
 ###

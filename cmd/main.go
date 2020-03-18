@@ -14,7 +14,6 @@ import (
 var (
 	host = flag.String("host", "", "Server host")
 	port = flag.String("port", "", "Server port")
-	//dsn  = flag.String("dsn", "postgres://user:pass@localhost:5432/auth", "Postgres DSN")
 )
 
 const (

@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"fmt"
 	"github.com/FRahimov84/FileService/pkg/core/file"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/rest/pkg/rest"
@@ -19,12 +20,12 @@ var (
 	content = `
 Commands!!!
 - For upload 
-  	POST http://{{thisADDRESS}}/save
+  	POST http://thisADDRESS/save
  	 Content-Type: multipart/form-data;
-		{{Your body}}
-	then server returns JSON with key "name"" of your upload value "{{HASH}}" 
+		Your body
+	then server returns JSON with key "name"" of your upload value "HASH" 
 - For get file 
-	GET http://{{thisADDRESS}}/file/d445403b-1582-476f-bc69-e1e89d42a2dd
+	GET http://thisADDRESS/file/d445403b-1582-476f-bc69-e1e89d42a2dd
 `
 )
 
@@ -46,6 +47,7 @@ func NewServer(router *mux.ExactMux, fileSvc *file.Service) *Server {
 	ext[".txt"] = contentTypeText
 	ext[".pdf"] = contentTypePdf
 	ext[".png"] = contentTypePng
+	ext[".jpeg"] = contentTypeJpg
 	ext[".jpg"] = contentTypeJpg
 	ext[".html"] = contentTypeHtml
 	return &Server{router: router, fileSvc: fileSvc}
@@ -146,6 +148,7 @@ func (s *Server) handleGetFile() http.HandlerFunc {
 				if !strings.EqualFold(fileName, path){
 					continue
 				}
+				fmt.Println(filepath.Ext(info.Name()))
 				writer.Header().Set("Content-Type", ext[filepath.Ext(info.Name())])
 				body, err := ioutil.ReadFile("files/"+info.Name())
 				if err != nil {
