@@ -2,9 +2,9 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"github.com/FRahimov84/FileService/pkg/core/file"
 	"github.com/FRahimov84/Mux/pkg/mux"
+	"github.com/FRahimov84/myJwt/pkg/jwt"
 	"github.com/FRahimov84/rest/pkg/rest"
 	"html/template"
 	"io/ioutil"
@@ -41,27 +41,29 @@ const (
 type Server struct {
 	router  *mux.ExactMux
 	fileSvc *file.Service
+	secret 	jwt.Secret
 }
 
-func NewServer(router *mux.ExactMux, fileSvc *file.Service) *Server {
-	ext[".txt"] = contentTypeText
-	ext[".pdf"] = contentTypePdf
-	ext[".png"] = contentTypePng
-	ext[".jpeg"] = contentTypeJpg
-	ext[".jpg"] = contentTypeJpg
-	ext[".html"] = contentTypeHtml
-	return &Server{router: router, fileSvc: fileSvc}
+func NewServer(router *mux.ExactMux, fileSvc *file.Service, secret jwt.Secret) *Server {
+	return &Server{router: router, fileSvc: fileSvc, secret: secret}
 }
+
 
 func (s *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	s.router.ServeHTTP(writer, request)
 }
 
 func (s *Server) Stop() {
-	//todo: make stop
+
 }
 
 func (s *Server) Start() {
+	ext[".txt"] = contentTypeText
+	ext[".pdf"] = contentTypePdf
+	ext[".png"] = contentTypePng
+	ext[".jpeg"] = contentTypeJpg
+	ext[".jpg"] = contentTypeJpg
+	ext[".html"] = contentTypeHtml
 	s.InitRoutes()
 }
 
@@ -130,38 +132,38 @@ func (s *Server) handleSaveFiles() http.HandlerFunc {
 
 func (s *Server) handleGetFile() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-
 		dir, err := ioutil.ReadDir(s.fileSvc.Filepath)
 		if err != nil {
 			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
-		path := request.URL.Path
-		path = path[6:]
+		path, ok := mux.FromContext(request.Context(), "id")
+		log.Print(path)
+		if ok {
+			for _, info := range dir {
+				if !info.IsDir() {
+					fileName := info.Name()
+					fileName = fileName[:len(fileName)-len(filepath.Ext(fileName))]
+					if !strings.EqualFold(fileName, path){
+						continue
+					}
 
-
-		for _, info := range dir {
-			if !info.IsDir() {
-				fileName := info.Name()
-				fileName = fileName[:len(fileName)-len(filepath.Ext(fileName))]
-				log.Println(fileName, path)
-				if !strings.EqualFold(fileName, path){
-					continue
-				}
-				fmt.Println(filepath.Ext(info.Name()))
-				writer.Header().Set("Content-Type", ext[filepath.Ext(info.Name())])
-				body, err := ioutil.ReadFile("files/"+info.Name())
-				if err != nil {
-					http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+					body, err := ioutil.ReadFile("files/"+info.Name())
+					if err != nil {
+						http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+						return
+					}
+					writer.Header().Set("Content-Type", ext[filepath.Ext(info.Name())])
+					_, err = writer.Write(body)
+					if err != nil {
+						log.Println(errors.New("error"))
+					}
 					return
 				}
-				_, err = writer.Write(body)
-				if err != nil {
-					log.Println(errors.New("error"))
-				}
-				return
 			}
 		}
+
+
 		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }

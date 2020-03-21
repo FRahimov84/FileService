@@ -6,6 +6,7 @@ import (
 	"github.com/FRahimov84/FileService/pkg/core/file"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/di/pkg/di"
+	"github.com/FRahimov84/myJwt/pkg/jwt"
 	"net"
 	"net/http"
 	"os"
@@ -26,7 +27,8 @@ func main() {
 	serverHost := checkENV(envHost, *host)
 	serverPort := checkENV(envPort, *port)
 	addr := net.JoinHostPort(serverHost, serverPort)
-	start(addr)
+	secret := jwt.Secret("secret")
+	start(addr, secret)
 }
 
 func checkENV(env string, loc string) string {
@@ -36,10 +38,11 @@ func checkENV(env string, loc string) string {
 	}
 	return str
 }
-func start(addr string) {
+func start(addr string, secret jwt.Secret) {
 	container := di.NewContainer()
 	container.Provide(
 		func() string {return "files"},
+		func() jwt.Secret { return secret },
 		app.NewServer,
 		file.NewService,
 		mux.NewExactMux,

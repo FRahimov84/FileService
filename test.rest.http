@@ -1,15 +1,16 @@
 POST http://localhost:9888/save
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJSZW5kTCIsImV4cCI6MTU4NDgxNzg0Miwicm9sZXMiOlsiQWRtaW4iXX0.r4LRmLAbw9Ano9yggh6VVN_2F2Zp1QldGmlHSMM0uC0
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; name="file"; filename="par.txt"
+Content-Disposition: form-data; name="file"; filename="par.jpg"
 Content-Type: text/plain
 
-l;ksdk;sdkf;s
+<- down.jpg
 --WebAppBoundary--
 
 ###
 
-GET http://localhost:9988/file/c7a8e188-e5a4-4e4d-a8ab-14f7a9e90702
+GET http://localhost:9888/media/b8436435-9388-4c73-b1d0-c1fcfe951104
 
 ###
