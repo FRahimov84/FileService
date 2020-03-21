@@ -97,7 +97,7 @@ func (s *Server) handleSaveFiles() http.HandlerFunc {
 		}
 		files := request.MultipartForm.File["file"]
 		type FileURL struct {
-			Name string
+			Name string `json:"name"`
 		}
 		fileURLs := make([]FileURL, 0, len(files))
 
