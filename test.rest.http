@@ -1,4 +1,4 @@
-POST http://localhost:9888/save
+POST https://file-servisss.herokuapp.com/save
 Authorization: Bearer {{auth_token}}
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
@@ -6,12 +6,13 @@ Content-Type: multipart/form-data; boundary=WebAppBoundary
 Content-Disposition: form-data; name="file"; filename="par.jpg"
 Content-Type: text/plain
 
-dfdfdfdf
+< ./pie.jpg
 --WebAppBoundary--
 
 ###
 
-GET http://localhost:9888/media/b8436435-9388-4c73-b1d0-c1fcfe951104
+GET https://file-servisss.herokuapp.com/media/216db9bf-bc4b-4889-9dbf-8f0db3e4beea
+Authorization: Bearer {{auth_token}}
 
 ###
 POST https://auth-servisss.herokuapp.com/api/tokens

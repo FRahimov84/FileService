@@ -24,8 +24,8 @@ func (s *Server) InitRoutes() {
 	s.router.GET(
 		"/media/{id}",
 		s.handleGetFile(),
-		authenticated.Authenticated(jwt.IsContextNonEmpty),
-		jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
+		//authenticated.Authenticated(jwt.IsContextNonEmpty),
+		//jwt.JWT(reflect.TypeOf((*token.Payload)(nil)).Elem(), s.secret),
 		logger.Logger("Media."),
 		)
 
